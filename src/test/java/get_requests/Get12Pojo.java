@@ -2,93 +2,83 @@ package get_requests;
 
 import base_urls.HerOkuAppBaseUrl;
 import io.restassured.response.Response;
-import org.junit.Assert;
 import org.junit.Test;
 import pojos.BookingDatesPojo;
 import pojos.BookingPojo;
 
-import java.util.HashMap;
-
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertEquals;
 
 public class Get12Pojo extends HerOkuAppBaseUrl {
-      /*
+    /*
         Given
-            https://restful-booker.herokuapp.com/booking/2910
+            https://restful-booker.herokuapp.com/booking/29608
         When
  		    I send GET Request to the URL
  	    Then
  		    Status code is 200
  		And
- 		    Response body is like{
-    "firstname": "Josh",
-    "lastname": "Allen",
-    "totalprice": 111,
-    "depositpaid": true,
-    "bookingdates": {
-        "checkin": "2018-01-01",
-        "checkout": "2019-01-01"
+ 		    Response body is like {
+                        "firstname": "Pedro",
+                    "lastname": "Rocha",
+                   "totalprice": 134,
+                     "depositpaid": true,
+                                   "bookingdates": {
+                            "checkin": "2018-01-01",
+                          "checkout": "2019-01-01"
     },
-    "additionalneeds": "super bowls"
+    "additionalneeds": "Breakfast"
 }
      */
 
     @Test
-    public void get12() {
+    public void get12(){
 
-        //set the url
-        spec.pathParams("first","booking", "second", 2910 );
+        //Set the url
+        spec.pathParams("first","booking","second",29108);
 
 
-        //set the expecteddata
-        BookingDatesPojo bookingDatesPojo=new BookingDatesPojo("2018-01-01", "2019-01-01");
+        //Set the expected data
 
-        BookingPojo expectedData=new BookingPojo("Josh", "Allen",111,true, bookingDatesPojo, "super bowls" );
+        BookingDatesPojo bookingDatesPojo=new BookingDatesPojo("2018-01-01","2019-01-01");
 
-        System.out.println("expectedData :"+expectedData);
+        BookingPojo expectedData=new BookingPojo("Pedro","Rocha",134,true,bookingDatesPojo,"Breakfast");
 
-        //send the request and get the response
+        System.out.println("expectedData =  "+expectedData);
 
+        //Send the request and get the response
         Response response = given().spec(spec).when().get("/{first}/{second}");
         response.prettyPrint();
 
-        //do assertion
-        BookingPojo actualData=response.as(BookingPojo.class);
+        //Do Assertion
+        BookingPojo actualData = response.as(BookingPojo.class);
+        System.out.println("actualData  =  " + actualData);
 
-        Assert.assertEquals(200, response.statusCode());
-        Assert.assertEquals(expectedData.getFirstname(), actualData.getFirstname());
-        Assert.assertEquals(expectedData.getLastname(), actualData.getLastname());
-        Assert.assertEquals(expectedData.getTotalprice(), actualData.getTotalprice());
-        Assert.assertEquals(expectedData.getDepositpaid(), actualData.getDepositpaid());
-        Assert.assertEquals(expectedData.getAdditionalneeds(), actualData.getAdditionalneeds());
+        assertEquals(200,response.statusCode());
+        assertEquals(expectedData.getFirstname(),actualData.getFirstname());
+        assertEquals(expectedData.getLastname(),actualData.getLastname());
+        assertEquals(expectedData.getTotalprice(),actualData.getTotalprice());
+        assertEquals(expectedData.getDepositpaid(),actualData.getDepositpaid());
+        assertEquals(expectedData.getAdditionalneeds(),actualData.getAdditionalneeds());
 
-        //1 st way
-        Assert.assertEquals(expectedData.getBookingdates().getCheckin(), actualData.getBookingdates().getCheckin());
-        Assert.assertEquals(expectedData.getBookingdates().getCheckout(), actualData.getBookingdates().getCheckout());
+        //1st Way:
+        assertEquals(expectedData.getBookingdates().getCheckin(), actualData.getBookingdates().getCheckin());
+        assertEquals(expectedData.getBookingdates().getCheckout(), actualData.getBookingdates().getCheckout());
 
-        //2 nd way
-
-        Assert.assertEquals(expectedData.getBookingdates().getCheckin(), actualData.getBookingdates().getCheckin());
-        Assert.assertEquals(expectedData.getBookingdates().getCheckout(), actualData.getBookingdates().getCheckout());
-
-
-
-
-
-
-
-
-
-
-
-
-
+        //2nd Way:Recommended
+        assertEquals(bookingDatesPojo.getCheckin(),actualData.getBookingdates().getCheckin());
+        assertEquals(bookingDatesPojo.getCheckout(),actualData.getBookingdates().getCheckout());
 
 
 
 
 
     }
+
+
+
+
+
 
 
 }

@@ -6,7 +6,7 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
 
 
-public class JsonPlaceHolderBaseUrl  {
+public class JsonPlaceHolderBaseUrl {
 
     protected RequestSpecification spec;
 
