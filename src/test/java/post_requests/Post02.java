@@ -1,9 +1,8 @@
-package post_request;
+package post_requests;
 
 import base_urls.HerOkuAppBaseUrl;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.junit.Assert;
 import org.junit.Test;
 import test_data.HerOkuAppTestData;
 
@@ -11,10 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertEquals;
 
 public class Post02 extends HerOkuAppBaseUrl {
 
-    /*
+/*
 Given
             1) https://restful-booker.herokuapp.com/booking
             2) {
@@ -48,45 +48,37 @@ Given
                                              }
  */
 
-
     @Test
-    public void post02Test(){
-
-        //set the url
+    public void post02(){
+       //Set the expected data
         spec.pathParam("first","booking");
-        //set the expectedData
+
+        //Set the expected datadata ==> payload
+
         HerOkuAppTestData obj=new HerOkuAppTestData();
-        Map<String,String> bookingDatesMap=obj.bookingDateMapSetUp("2021-09-09", "2021-09-09");
+        Map<String,String> bookingdatesMap=obj.bookingdatesMapSetUp("2021-09-09","2021-09-21");
 
-        Map<String, Object> expectedData=obj.expecteddataSetUp( "John", "Doe",  11111, true, bookingDatesMap,"Breakfast");
-        System.out.println("expecteddata :"+expectedData);
+       Map<String,Object> expectedData=obj.expectedDataSetUp("John","Doe",11111,true, bookingdatesMap,"breakfast") ;
 
 
-        //send the request and get the response
+               //Send request and get request
+        Response response=given().spec(spec).contentType(ContentType.JSON).body(expectedData).when().post("/{first}");
 
-       Response response =  given().spec(spec).contentType(ContentType.JSON).body(expectedData).post("/{first}");
-        response.prettyPrint();
 
-        //do assertion
-
+        //Do assertion
         Map<String,Object> actualData=response.as(HashMap.class);
-
-
-        Assert.assertEquals(200,response.statusCode());
-        Assert.assertEquals(expectedData.get("firstname"), ((Map)(actualData.get("booking"))).get("firstname"));
-        Assert.assertEquals(expectedData.get("lastname"), ((Map)(actualData.get("booking"))).get("lastname"));
-        Assert.assertEquals(expectedData.get("totalprice"), ((Map)(actualData.get("booking"))).get("totalprice"));
-        Assert.assertEquals(expectedData.get("depositpaid"), ((Map)(actualData.get("booking"))).get("depositpaid"));
-     //   Assert.assertEquals(expectedData.get("additionalneeds"),  actualData. get("additionalneeds"));
-
-        Assert.assertEquals(bookingDatesMap.get("checkin"),((Map)((Map)(actualData.get("booking"))).get("bookingdates")).get("checkin"));
-        Assert.assertEquals(bookingDatesMap.get("checkout"),((Map)((Map)(actualData.get("booking"))).get("bookingdates")).get("checkin"));
+        System.out.println(actualData);
 
 
 
+        assertEquals(200, response.statusCode());
+        assertEquals(expectedData.get("firstname"), ((Map) (actualData.get("Booking"))).get("firstname"));
+        assertEquals(expectedData.get("lastname"), ((Map) (actualData.get("Booking"))).get("lastname"));
+        assertEquals(expectedData.get("totalprice"), ((Map) (actualData.get("Booking"))).get("totalprice"));
+        assertEquals(expectedData.get("depositpaid"), ((Map) (actualData.get("Booking"))).get("depositpaid"));
 
-
-
+        assertEquals(expectedData.get("checkin"), ((Map)((Map) (actualData.get("Booking"))).get("bookingdates")).get("checkin"));
+        assertEquals(expectedData.get("checkout"), ((Map)((Map) (actualData.get("Booking"))).get("bookingdates")).get("checkout"));
 
 
 
@@ -96,6 +88,16 @@ Given
 
 
     }
+
+
+
+
+
+
+
+
+
+
 
 
 
